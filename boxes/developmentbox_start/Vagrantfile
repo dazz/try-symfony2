@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+
+  config.vm.define :developmentbox_start do |developmentbox_start|
+
+    # on which base box this box will be setup from
+    developmentbox_start.vm.box = "developmentbox"
+
+    developmentbox_start.vm.boot_mode = :gui
+
+    # developmentbox_start.vm.forward_port 80, 8080
+    # developmentbox_start.vm.share_folder "v-data", "/vagrant_data", "../data"
+    #
+    developmentbox_start.vm.network :hostonly, "192.168.23.42", :auto_config => true, :adapter => 2
+    developmentbox_start.ssh.forward_agent = true
+    
+    developmentbox_start.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "./"
+      puppet.manifest_file  = "manifest.pp"
+      puppet.module_path = "../../modules"
+      puppet.options = "--verbose --debug"
+    end
+  end
+end

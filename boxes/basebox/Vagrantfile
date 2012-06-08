@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+
+
+  config.vm.define :basebox do |basebox|
+
+    # identifier that we want the box to be named
+    basebox.package.name = "basebox"
+
+    # base_box of our BASE BOX
+    basebox.vm.box = "squeeze64"
+
+    # you can set your own url here, but make sure that you do not maintain this box to stay
+    # clear of your project scope. it ends here.
+    # basebox.vm.box_url = "http://mathie-vagrant-boxes.s3.amazonaws.com/debian_squeeze_32.box"
+    basebox.vm.box_url = "http://puppetlabs.s3.amazonaws.com/pub/squeeze64.box"
+
+    # left it here for dev purpose, don't need it really
+    # basebox.vm.boot_mode = :gui
+
+    # basebox.vm.forward_port 80, 8080
+    # basebox.vm.share_folder "v-data", "/vagrant_data", "../data"
+
+    # as you don't start this vm at the same time as the successor it is ok to have
+    # the same ip for every Vagrantfile
+    basebox.vm.network :hostonly, "192.168.23.42", :auto_config => true, :adapter => 2
+
+    # we want to run git in the vm
+    basebox.ssh.forward_agent = true
+
+    # the manifest.pp is in the same directory as the Vagrantfile
+    basebox.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "./"
+      puppet.manifest_file  = "manifest.pp"
+      puppet.module_path = "../../modules"
+      puppet.options = "--verbose --debug"
+    end
+  end
+
+# copy aaaaall the values I could set
+
+  #    config.nfs.map_uid
+  #    config.nfs.map_gid
+  #    config.package.name
+  #    config.ssh.username
+  #    config.ssh.host
+  #    config.ssh.port
+  #    config.ssh.guest_port
+  #    config.ssh.max_tries
+  #    config.ssh.timeout
+  #    config.ssh.private_key_path
+  #    config.ssh.forward_agent
+  #    config.ssh.forward_x11
+  #    config.ssh.shell
+  #    config.vagrant.dotfile_name
+  #    config.vagrant.host
+  #    config.vm.auto_port_range
+  #    config.vm.base_mac
+  #    config.vm.boot_mode
+  #    config.vm.box
+  #    config.vm.box_url
+  #    config.vm.customize
+  #    config.vm.define
+  #    config.vm.forward_port
+  #    config.vm.guest
+  #    config.vm.host_name
+  #    config.vm.network
+  #    config.vm.provision
+  #    config.vm.share_folder
+
+end

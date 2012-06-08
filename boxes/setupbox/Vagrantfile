@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+
+  config.vm.define :setupbox do |setupbox|
+
+    # on which base box this box will be setup from
+    setupbox.vm.box = "basebox"
+
+    setupbox.vm.boot_mode = :gui
+
+    # setupbox.vm.forward_port 80, 8080
+    # setupbox.vm.share_folder "v-data", "/vagrant_data", "../data"
+    #
+    setupbox.vm.network :hostonly, "192.168.23.42", :auto_config => true, :adapter => 2
+    setupbox.ssh.forward_agent = true
+    
+    setupbox.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "./"
+      puppet.manifest_file  = "manifest.pp"
+      puppet.module_path = "../../modules"
+      puppet.options = "--verbose --debug"
+    end
+  end
+end

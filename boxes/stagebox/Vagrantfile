@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+
+  config.vm.define :stagebox do |stagebox|
+
+    # on which base box this box will be setup from
+    stagebox.vm.box = "productionbox"
+
+    # stagebox.vm.boot_mode = :gui
+
+    # stagebox.vm.forward_port 80, 8080
+    # stagebox.vm.share_folder "v-data", "/vagrant_data", "../data"
+    #
+    stagebox.vm.network :hostonly, "192.168.23.42", :auto_config => true, :adapter => 2
+    stagebox.ssh.forward_agent = true
+    
+    stagebox.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "./"
+      puppet.manifest_file  = "manifest.pp"
+      puppet.module_path = "../../modules"
+      puppet.options = "--verbose --debug"
+    end
+  end
+end
