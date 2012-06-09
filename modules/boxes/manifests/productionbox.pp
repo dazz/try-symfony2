@@ -8,12 +8,7 @@ class boxes::productionbox {
   #Package [require => Exec['apt_update']]
   Exec["apt_update"] -> Package <| |>
 
-  # your stuff here
-
-  # TODO: Externalize globals
-  $projectname = "symfony"
-  $owner = "vagrant"
-  $group = "www-data"
+  # installing software starts here
 
   # download from git into tempdir
   #class{'littlebird::download':

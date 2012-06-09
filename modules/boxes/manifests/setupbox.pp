@@ -12,7 +12,7 @@ class boxes::setupbox {
   include apache::php
 
   # install additional php-packages
-  package{ ["php5-intl","php5-mysql"]:
+  package{$boxes:php_packages:
     ensure => "installed",
     require => Class["apache::php"],
   }
@@ -30,7 +30,7 @@ class boxes::setupbox {
 
   # add user vagrant to group www-data
   user {"vagrant":
-    groups => "www-data",
+    groups => "$boxes::www_group",
   }
 
   Class["augeas"] -> Class["apache::php"] -> Class["mysql::server"]

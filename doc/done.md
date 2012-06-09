@@ -15,3 +15,13 @@
 * install mysql server with user root, password vagrant
 * install augeas (tool for modifying system config files)
 * add user vagrant to group www-data
+
+# productionbox
+
+* php_ini set date.timezone
+* php_ini set short_open_tag to Off
+* setup apache vhost for project
+
+# testbox
+
+*

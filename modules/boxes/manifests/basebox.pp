@@ -17,8 +17,8 @@ class boxes::basebox {
   }
 
   # add sources list of debian squeeze german
-  apt::source {"debian_squeeze_german":
-    location          => "http://ftp.de.debian.org/debian/",
+  apt::source {"debian_squeeze_sources":
+    location          => "$boxes::apt_sources_location",
     release           => "squeeze",
     repos             => "main contrib",
     include_src       => true
