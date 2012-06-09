@@ -7,19 +7,17 @@ class boxes::basebox {
   Exec["apt_update"] -> Package <| |>
 
   # fix udev rules
-  exec { "fix_udev_rules":
-    command => "rm -f /etc/udev/rules.d/70-persistent-net.rules"
+  file {"/etc/udev/rules.d/70-persistent-net.rules":
+    ensure => absent,
   }
 
   # fix udev rules generator
-  exec { "fix_udev_generator":
-    command => "rm -f /lib/udev/rules.d/75-persistent-net-generator.rules"
+  file {"/lib/udev/rules.d/75-persistent-net-generator.rules":
+    ensure => absent,
   }
 
-  # your stuff here
-
-  # add sources list
-  apt::source { "debian_squeeze_german":
+  # add sources list of debian squeeze german
+  apt::source {"debian_squeeze_german":
     location          => "http://ftp.de.debian.org/debian/",
     release           => "squeeze",
     repos             => "main contrib",
@@ -27,11 +25,16 @@ class boxes::basebox {
    }
   
   # delete present mirrors
-  file { "/etc/apt/sources.list":
+  file {"/etc/apt/sources.list":
     ensure => absent,
   }
     
-  class { 'locales':
-    locales => [ 'de_DE.UTF-8 UTF-8'],
+  class {'locales':
+    locales => ['de_DE.UTF-8 UTF-8'],
   }
+
+  # TODO:
+  # update puppet, because some modules require a newer version than there might be installed
+
+  # update facter
 }
