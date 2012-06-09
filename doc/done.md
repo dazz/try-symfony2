@@ -39,3 +39,7 @@
 # testbox
 
 * install pear
+* upgrade pear
+* add pear channels php-unit and symfony
+* install php-unit with pear channel
+
