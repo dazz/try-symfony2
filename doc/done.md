@@ -29,4 +29,4 @@
 
 # testbox
 
-*
+* install pear
