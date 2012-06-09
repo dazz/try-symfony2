@@ -7,7 +7,8 @@ class boxes::testbox {
     Exec["apt_update"] -> Package <| |>
 
     # software installation starts here
-    
+
+    # install pear
     package {"php-pear":
       ensure => present
     }
