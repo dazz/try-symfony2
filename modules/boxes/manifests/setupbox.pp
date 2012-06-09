@@ -6,7 +6,7 @@ class boxes::setupbox {
   #Package [require => Exec['apt_update']]
   Exec["apt_update"] -> Package <| |>
 
-  # your stuff here
+  # install software
 
   # install apache + php
   include apache::php
