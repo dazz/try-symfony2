@@ -21,11 +21,20 @@
 # productionbox
 
 * php_ini set date.timezone
-* php_ini set short_open_tag to Off
 * [TODO] php_ini set display_errors to Off
 * [TODO] php_ini set log_errors to On
 * [TODO] php_ini set error_log to /var/log/php.log
 * setup apache vhost for project
+
+## security
+
+* [TODO] php_ini set memory_limit=128M
+* [TODO] php_ini set max_execution_time=30
+* [TODO] php_ini set display_errors=off
+* [TODO] php_ini set expose_php=off
+* [TODO] php_ini set mail.log=/var/log/phpmails.log
+* [TODO] php_ini set disable_functions=exec
+* php_ini set short_open_tag to Off
 
 # testbox
 
