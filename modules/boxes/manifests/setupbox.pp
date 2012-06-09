@@ -19,7 +19,7 @@ class boxes::setupbox {
 
   # add mysql with password
   class {'mysql::server':
-    config_hash => { 'root_password' => 'vagrant' }
+    config_hash => { 'root_password' => "$boxes::mysql_password" }
   }
 
   # install augeas
@@ -32,6 +32,8 @@ class boxes::setupbox {
   user {"vagrant":
     groups => "$boxes::www_group",
   }
+
+  # TODO: install mongodb
 
   Class["augeas"] -> Class["apache::php"] -> Class["mysql::server"]
     
