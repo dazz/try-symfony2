@@ -6,6 +6,7 @@ boxes=(basebox setupbox productionbox testbox developmentbox stagebox)
 # set VAGRANT_LOG=DEBUG
 # set VAGRANT_LOG=INFO
 # set VAGRANT_LOG=
+# export alias vboxes='./build_boxes.sh'
 
 boxes_list() {
   echo "boxes: ${boxes[@]}"

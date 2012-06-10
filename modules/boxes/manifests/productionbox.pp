@@ -8,12 +8,7 @@ class boxes::productionbox {
   #Package [require => Exec['apt_update']]
   Exec["apt_update"] -> Package <| |>
 
-  # your stuff here
-
-  # TODO: Externalize globals
-  $projectname = "symfony"
-  $owner = "vagrant"
-  $group = "www-data"
+  # installing software starts here
 
   # download from git into tempdir
   #class{'littlebird::download':
@@ -27,19 +22,16 @@ class boxes::productionbox {
   #  installdir => $littlebird::params::install_dir,
   #}
 
-  # TODO: Externalize globals
-  $timezone='Europe/Berlin'
-
-  # update Timezone php apache
+    # update Timezone php apache
   augeas{"Set PHPTimezone_apache" :
     context => "/files/etc/php5/apache2/php.ini/DATE",
-    changes => "set date.timezone $timezone",
+    changes => "set date.timezone $boxes::php_ini_timezone",
   }
 
   # update Timezone php cli
   augeas{"Set PHPTimezone_phpcli" :
     context => "/files/etc/php5/cli/php.ini/DATE",
-    changes => "set date.timezone $timezone",
+    changes => "set date.timezone $boxes::php_ini_timezone",
   }
 
   # update short_open_tag php cli
@@ -54,40 +46,27 @@ class boxes::productionbox {
     changes => "set short_open_tag Off",
   }
 
-  # TODO: Externalize globals
-  $projectname = "symfony"
-  $install_dir = "/var/www"
-  $project_root = "$install_dir/$projectname"
-
   # add vhost
   apache::vhost {"default":
     port => '80',
-    #servername => "$projectname",
+    #servername => "$boxes::vhost_servername",
     priority => '0',
-    serveraliases => "$projectname",
+    serveraliases => "$boxes::projectname",
     configure_firewall => false,
-    docroot => "$project_root/web",
-    template => 'apache/vhost-default.conf.erb',
+    docroot => "$boxes::vhost_docroot",
+    template => "$boxes::vhost_template",
     #require => Class["littlebird::copy"],
     vhost_name => '*',
     options => "Indexes FollowSymLinks MultiViews"
   }
-    
-  # change owership of installdir to $owner
-  exec { "set $projectname owner":
-  command => "chown -R $owner:$group $project_root",
-    user => root,
-    cwd => "$project_root",
-    logoutput => true,
-	}
-    
-  # change group of installdir to $group
-  exec { "set $projectname mod":
-    command => "chmod -R 1775 $project_root",
-    user => root,
-    cwd => "$project_root",
-    logoutput => true,
-	}
+
+  # change ownership of installdir to $user
+  file{"$boxes::project_root"
+    user => "$boxes::user",
+    group => "$boxes::www_group",
+    mode => 1775,
+    recurse => true
+  }
     
   #Class["littlebird::download"] -> Class["littlebird::copy"] -> Exec["set $projectname owner"] -> Exec["set $projectname mod"] -> Class["apache"]
 }

@@ -6,20 +6,20 @@ class boxes::setupbox {
   #Package [require => Exec['apt_update']]
   Exec["apt_update"] -> Package <| |>
 
-  # your stuff here
+  # install software
 
   # install apache + php
   include apache::php
 
   # install additional php-packages
-  package{ ["php5-intl","php5-mysql"]:
+  package{$boxes:php_packages:
     ensure => "installed",
     require => Class["apache::php"],
   }
 
   # add mysql with password
   class {'mysql::server':
-    config_hash => { 'root_password' => 'vagrant' }
+    config_hash => { 'root_password' => "$boxes::mysql_password" }
   }
 
   # install augeas
@@ -30,8 +30,10 @@ class boxes::setupbox {
 
   # add user vagrant to group www-data
   user {"vagrant":
-    groups => "www-data",
+    groups => "$boxes::www_group",
   }
+
+  # TODO: install mongodb
 
   Class["augeas"] -> Class["apache::php"] -> Class["mysql::server"]
     
