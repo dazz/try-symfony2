@@ -18,11 +18,14 @@
 
 ## productionbox
 
+* setup apache vhost for project
+
+### php
+
 * php_ini set date.timezone
 * TODO: php_ini set display_errors to Off
 * TODO: php_ini set log_errors to On
 * TODO: php_ini set error_log to /var/log/php.log
-* setup apache vhost for project
 
 and for security
 
@@ -33,6 +36,10 @@ and for security
 * TODO: php_ini set mail.log=/var/log/phpmails.log
 * TODO: php_ini set disable_functions=exec
 * php_ini set short_open_tag to Off
+
+### apache
+
+* TODO: setup apache security
 
 ## testbox
 
