@@ -64,11 +64,11 @@ define installnodejspackage($log = 'on_failure'){
 
 define installgems($log = 'on_failure'){
     exec { "install $name":
-		command     => "gem install $name",
+        command     => "gem install $name",
         user        => root,
         logoutput   => $log,
         creates     => "/var/lib/gems/1.8/bin/$name",
         cwd         => "/usr/bin/",
         require     => Package["rubygems1.8"],
-	}
+    }
 }
