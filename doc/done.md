@@ -1,5 +1,3 @@
-# done
-
 ## basebox
 
 * fix network (udev)
