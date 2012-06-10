@@ -27,4 +27,25 @@ class boxes {
 
   # testbox
 
+  # developmentbox
+  $composer_dir      = ""
+
+  ## put here your tools
+  $dev_packages      = ['vim', 'aptitude', 'sudo', 'mc', 'screen', 'zsh', 'git-flow']
+
+  $nodejs_version    = "stable"
+  $nodejs_packages   = ["zombie"]
+  $gems              = ['compass','sass']
+
+  # developmentbox_start
+  $dev_start_packages = []
+
+  # [TODO] add your user
+  $dev_start_users = {
+    'nick' => {
+      uid    => '1330',
+      group  => allstaff,
+      groups => ['www-data', 'vagrant'], }
+   }
+
 }
