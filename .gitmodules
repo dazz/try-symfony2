@@ -34,3 +34,6 @@
 [submodule "modules/xdebug"]
 	path = modules/xdebug
 	url = git://github.com/LittleBird-Dev/puppet-xdebug.git
+[submodule "modules/pear"]
+	path = modules/pear
+	url = git://github.com/treehouseagency/puppet-pear.git
