@@ -2,6 +2,8 @@
 
 # see for the right order here
 boxes=(basebox setupbox productionbox testbox developmentbox stagebox)
+boxes_dir='boxes'
+
 
 # set VAGRANT_LOG=DEBUG
 # set VAGRANT_LOG=INFO
@@ -128,6 +130,13 @@ box_package() {
   popd >/dev/null
 }
 
+box_provision() {
+  box="$1"
+  pushd boxes/$box >/dev/null
+    vagrant provision
+  popd >/dev/null
+}
+
 box_add() {
   if [ ! -n "$1" ]; then
     echo "Usage: box add <box>"
@@ -154,6 +163,37 @@ box_remove_pack() {
   popd >/dev/null
 }
 
+
+test_box_is_added() {
+  box=$1
+  echo_this="[test is added] "
+  pushd boxes/$box >/dev/null
+    if [ $(vagrant box list |grep $box|wc -l) -gt 0 ]; then
+      echo "$echo_this box $box is already added."
+      echo "$echo_this You can start building the next box or"
+      echo "$echo_this you can destroy you work and build new :)."
+    else
+      echo "$echo_this box is not added"
+    fi
+  popd >/dev/null
+}
+
+# prüfen ob die box gepackt ist und die gepackte box
+# an der richtigen stelle liegt
+test_box_is_packed() {
+
+  box=$1
+  echo_this="[test is packed]"
+  if [ -f /boxes/$box.box ]
+  then
+    echo "$echo_this boxes/$box.box exists. (run 'box add $box')"
+    #echo "yes"
+  else
+    echo "$echo_this boxes/$box.box is not packed. (run 'box build $box')"
+    #echo "no"
+  fi
+}
+
 box_build() {
   if [ ! -n "$1" ]; then
     echo "Usage: box build <box>"
@@ -163,33 +203,42 @@ box_build() {
 
   echo_this="[box_build][$1]"
 
-
-  box=""
   # set $box
-  for check_box in ${boxes[@]}; do
-    if [ "$1" = "$check_box" ]; then
-      echo "$echo_this Checking that box $check_box exists in list"
-      box=$check_box
-    fi
-  done
-
-  if [ ! -n "${box}" ]; then
+  match=$(echo "${boxes[@]:0}" | grep -o $1)
+  echo $match
+  if [ -z $match ]; then
     echo "$echo_this The box you chose '$1' is not existing. Please edit enabled boxes or check that the box you want to build exists"
     boxes_list
     exit
   fi
 
-  box_status $box
+  box=$1
 
+  # if running stop
+  if [ $(box_status $box |grep running|wc -l) -gt 0 ]; then
+    echo "$echo_this Haling the box"
+    vagrant halt
+  elif [ $(box_status $box |grep poweroff|wc -l) -gt 0 ]; then
+    echo "$echo_this The $box is powered off"
+  else
+    box_status $1
+  fi
+
+  # destroy vm
   box_destroy $box
 
-  box_base_remove $box
+  # remove from added boxes
+  if [ $(vagrant box list |grep $box|wc -l) -gt 0 ]; then
+    box_base_remove $box
+  fi
 
   box_start $box
 
   box_stop $box
 
-  box_remove_pack $box
+  if [ -f /boxes/$box.box ]; then
+   box_remove_pack $box
+  fi
 
   box_package $box
 
@@ -201,8 +250,18 @@ boxes_build() {
 
   for box in ${boxes[@]}; do
     box_build $box
+    test_box_is_packed $box
+    test_box_is_added $box
+    echo -n "Do you want to proceed? [Y/n]"
+    read proceed_building_boxes
+
+    if [ "$proceed_building_boxes" == "n" ]; then
+      echo "Stopping the  build process"
+      exit
+    fi
   done
 }
+
 
 start() {
 
@@ -219,6 +278,12 @@ start() {
     'stop')
       box_stop $3
       ;;
+    'package')
+      box_package $3
+      ;;
+    'add')
+      box_start $3
+      ;;
     'destroy')
       box_destroy $3
       ;;
@@ -227,6 +292,9 @@ start() {
       ;;
     'status')
       box_status $3
+      ;;
+    'provision')
+      box_provision $3
       ;;
     'base')
       case "$3" in
@@ -247,9 +315,12 @@ Options:
   - build <box>         build a box
   - start <box>         start a box
   - stop <box>          halt a box
+  - package <box>       package a box
+  - add <box>           add a box as basebox
   - destroy <box>       destroy created box
   - remove_pack <box>   removes packed file
   - status <box>        show status of box
+  - provision <box>     provision a box
   - base                .. more options here
 "
       ;;
