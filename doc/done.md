@@ -2,7 +2,8 @@
 
 * fix network (udev)
 * update sources
-* TODO: update puppet and facter
+* add locale
+* update puppet and facter
 
 ## setupbox
 
