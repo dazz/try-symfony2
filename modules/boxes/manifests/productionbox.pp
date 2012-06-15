@@ -1,6 +1,6 @@
 class boxes::productionbox {
 
-  include littlebird::params
+  include boxes
 
   # the update
   Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
@@ -55,7 +55,6 @@ class boxes::productionbox {
     configure_firewall => false,
     docroot => "$boxes::vhost_docroot",
     template => "$boxes::vhost_template",
-    #require => Class["littlebird::copy"],
     vhost_name => '*',
     options => "Indexes FollowSymLinks MultiViews"
   }
@@ -67,6 +66,4 @@ class boxes::productionbox {
     mode => 1775,
     recurse => true
   }
-    
-  #Class["littlebird::download"] -> Class["littlebird::copy"] -> Exec["set $projectname owner"] -> Exec["set $projectname mod"] -> Class["apache"]
 }
