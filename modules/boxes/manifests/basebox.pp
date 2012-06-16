@@ -1,5 +1,7 @@
 class boxes::basebox {
 
+  include boxes
+
   # the update
   Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
   include apt::update
@@ -23,18 +25,58 @@ class boxes::basebox {
     repos             => "main contrib",
     include_src       => true
    }
-  
+
   # delete present mirrors
   file {"/etc/apt/sources.list":
     ensure => absent,
   }
-    
+
+  # add DE locales
   class {'locales':
     locales => ['de_DE.UTF-8 UTF-8'],
   }
 
-  # TODO:
-  # update puppet, because some modules require a newer version than there might be installed
 
-  # update facter
+  # install new veriosn of facter
+  package {"facter":
+      ensure => installed
+  }
+
+  exec {"rename current facter":
+      command => "mv /usr/local/bin/facter /usr/local/bin/facter1.5.8",
+      user => root,
+      cwd => "/usr/local/bin",
+      creates => "/usr/local/bin/facter1.5.8"
+  }
+
+  exec {"link new facter":
+      command => "ln -s /usr/bin/facter /usr/local/bin/facter",
+      user => root,
+      cwd => "/usr/bin/",
+      creates => "/usr/local/bin/facter"
+  }
+
+  Package["facter"] -> Exec["rename current facter"] -> Exec["link new facter"]
+
+  # install new version of puppet
+  package {"puppet":
+      ensure => installed
+  }
+
+  exec{"rename current puppet":
+      command => "mv /usr/local/bin/puppet /usr/local/bin/puppet_old",
+      user => root,
+      cwd => "/usr/local/bin",
+      creates => "/usr/local/bin/puppet_old"
+  }
+
+  exec{"link new puppet":
+      command => "ln -s /usr/bin/puppet /usr/local/bin/puppet",
+      user => root,
+      cwd => "/usr/bin",
+      creates => "/usr/local/bin/puppet"
+  }
+
+  Package["puppet"] -> Exec["rename current puppet"] -> Exec["link new puppet"]
 }
+

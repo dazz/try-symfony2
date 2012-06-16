@@ -1,5 +1,7 @@
 class boxes::developmentbox_start {
 
+  include boxes
+
   # the update
   Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
   include apt::update

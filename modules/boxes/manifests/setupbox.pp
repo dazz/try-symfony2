@@ -1,5 +1,7 @@
 class boxes::setupbox {
 
+  include boxes
+
   # the update
   Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
   include apt::update
@@ -12,7 +14,7 @@ class boxes::setupbox {
   include apache::php
 
   # install additional php-packages
-  package{$boxes:php_packages:
+  package {$boxes::php_packages:
     ensure => "installed",
     require => Class["apache::php"],
   }

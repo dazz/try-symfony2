@@ -1,7 +1,7 @@
 class boxes {
 
   # basebox
-  $boxes::apt_sources_location = "http://ftp.de.debian.org/debian/"
+  $apt_sources_location = "http://ftp.de.debian.org/debian/"
 
   # setupbox
   $php_packages      = ["php5-intl","php5-mysql", "php5-libxm"]
