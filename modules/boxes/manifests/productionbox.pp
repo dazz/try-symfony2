@@ -9,8 +9,15 @@ class boxes::productionbox {
   Exec["apt_update"] -> Package <| |>
 
   # installing software starts here
-  # TODO: setup symfony
 
+  exec {"download $boxes::projectname":
+    command     => "git clone $boxes::repo_url $boxes::project_root",
+    require     => Class["gitreadonly"],
+    creates     => "$boxes::project_root",
+#      user        => $user,
+#      cwd         => "/home/$user/",
+      logoutput   => on_failure,
+  }
 
   # update Timezone php apache
   augeas{"Set PHPTimezone_apache" :
@@ -56,4 +63,8 @@ class boxes::productionbox {
     mode => 1775,
     recurse => true
   }
+    
+  Exec["download $boxes::projectname"]
+  -> File["$boxes::project_root"]
+  -> Class["apache"]
 }

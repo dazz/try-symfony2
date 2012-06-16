@@ -14,6 +14,7 @@ class boxes {
   $www_group         = "www-data"
 
   ## dirs and folders
+  $repo_url          = "https://github.com/symfony/symfony-standard.git"
   $install_dir       = "/var/www"
   $project_root      = "$install_dir/$projectname"
 
