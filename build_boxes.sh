@@ -11,8 +11,9 @@ boxes_dir='boxes'
 # export alias vboxes='./build_boxes.sh'
 
 boxes_list() {
-  echo "boxes: ${boxes[@]}"
-  echo "To edit the list of boxes, please see line 3 in this file"
+  echo_this="[boxes list]"
+  echo "$echo_this boxes: ${boxes[@]}"
+  echo "$echo_this To edit the list of boxes, please see line 3 in this file"
 }
 
 box_start() {
@@ -25,9 +26,9 @@ box_start() {
   box="$1"
   echo_this="[box_start][$box]"
 
-  echo "$echo_this vagrant up"
+  echo "$echo_this Starting the Box"
 
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant up
   popd >/dev/null
 }
@@ -40,10 +41,11 @@ box_status() {
   fi
 
   box="$1"
+  echo_this="[box_status][$box]"
 
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
 
-  echo "[$box] vagrant status"
+  echo "$echo_this vagrant status"
   vagrant status
 
   popd >/dev/null
@@ -63,7 +65,7 @@ box_destroy() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant destroy -f
   popd >/dev/null
 }
@@ -82,7 +84,8 @@ box_stop() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+
+  pushd $boxes_dir/$box >/dev/null
     vagrant halt
   popd >/dev/null
 }
@@ -102,7 +105,7 @@ box_base_remove() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant box remove $box
   popd >/dev/null
 }
@@ -125,14 +128,14 @@ box_package() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant package $box --output $box.box
   popd >/dev/null
 }
 
 box_provision() {
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant provision
   popd >/dev/null
 }
@@ -145,7 +148,7 @@ box_add() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     vagrant box add $box $box.box
   popd >/dev/null
 }
@@ -158,7 +161,7 @@ box_remove_pack() {
   fi
 
   box="$1"
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     rm -f $box.box
   popd >/dev/null
 }
@@ -167,7 +170,7 @@ box_remove_pack() {
 test_box_is_added() {
   box=$1
   echo_this="[test is added] "
-  pushd boxes/$box >/dev/null
+  pushd $boxes_dir/$box >/dev/null
     if [ $(vagrant box list |grep $box|wc -l) -gt 0 ]; then
       echo "$echo_this box $box is already added."
       echo "$echo_this You can start building the next box or"
@@ -184,12 +187,12 @@ test_box_is_packed() {
 
   box=$1
   echo_this="[test is packed]"
-  if [ -f /boxes/$box.box ]
+  if [ -f $boxes_dir/${box}/$box.box ]
   then
-    echo "$echo_this boxes/$box.box exists. (run 'box add $box')"
+    echo "$echo_this $boxes_dir/${box}/$box.box exists. (run 'box add $box')"
     #echo "yes"
   else
-    echo "$echo_this boxes/$box.box is not packed. (run 'box build $box')"
+    echo "$echo_this $boxes_dir/${box}/$box.box is not packed. (run 'box build $box')"
     #echo "no"
   fi
 }
@@ -205,7 +208,6 @@ box_build() {
 
   # set $box
   match=$(echo "${boxes[@]:0}" | grep -o $1)
-  echo $match
   if [ -z $match ]; then
     echo "$echo_this The box you chose '$1' is not existing. Please edit enabled boxes or check that the box you want to build exists"
     boxes_list
@@ -216,29 +218,42 @@ box_build() {
 
   # if running stop
   if [ $(box_status $box |grep running|wc -l) -gt 0 ]; then
-    echo "$echo_this Haling the box"
-    vagrant halt
+    echo "$echo_this Halting the box"
+    box_stop $box
   elif [ $(box_status $box |grep poweroff|wc -l) -gt 0 ]; then
     echo "$echo_this The $box is powered off"
   else
-    box_status $1
+    box_status $box
   fi
 
   # destroy vm
+  echo "$echo_this Destroying the box $box"
   box_destroy $box
 
   # remove from added boxes
   if [ $(vagrant box list |grep $box|wc -l) -gt 0 ]; then
+    echo "$echo_this Removing the box $box from list of added boxes"
     box_base_remove $box
+  fi
+
+  if [ -f $boxes_dir/${box}/${box}.box ]; then
+    echo "$echo_this file $boxes_dir/${box}/${box}.box exists, will be deleted."
+    box_remove_pack $box
+  else
+    echo "$echo_this file $boxes_dir/${box}/${box}.box does not exist, proceeding."
   fi
 
   box_start $box
 
-  box_stop $box
+  echo -n "$echo_this Do you want to proceed? [Y/n] "
+  read proceed_building_box
 
-  if [ -f /boxes/$box.box ]; then
-   box_remove_pack $box
+  if [ "$proceed_building_box" == "n" ]; then
+    echo "$echo_this Stopping the build process of box $box"
+    exit
   fi
+
+  box_stop $box
 
   box_package $box
 
@@ -247,16 +262,19 @@ box_build() {
 }
 
 boxes_build() {
+  echo_this="[boxes build]"
 
   for box in ${boxes[@]}; do
     box_build $box
+
     test_box_is_packed $box
     test_box_is_added $box
-    echo -n "Do you want to proceed? [Y/n]"
+
+    echo -n "$echo_this Do you want to proceed? [Y/n]"
     read proceed_building_boxes
 
     if [ "$proceed_building_boxes" == "n" ]; then
-      echo "Stopping the  build process"
+      echo "$echo_this Stopping the  build process"
       exit
     fi
   done
