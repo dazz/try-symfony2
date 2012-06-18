@@ -37,3 +37,6 @@
 [submodule "modules/pear"]
 	path = modules/pear
 	url = git://github.com/treehouseagency/puppet-pear.git
+[submodule "modules/jenkins"]
+	path = modules/jenkins
+	url = git://github.com/rtyler/puppet-jenkins.git
