@@ -20,25 +20,25 @@ class boxes::productionbox {
   }
 
   # update Timezone php apache
-  augeas{"Set PHPTimezone_apache" :
+  augeas {"Set PHPTimezone_apache" :
     context => "/files/etc/php5/apache2/php.ini/DATE",
     changes => "set date.timezone $boxes::php_ini_timezone",
   }
 
   # update Timezone php cli
-  augeas{"Set PHPTimezone_phpcli" :
+  augeas {"Set PHPTimezone_phpcli" :
     context => "/files/etc/php5/cli/php.ini/DATE",
     changes => "set date.timezone $boxes::php_ini_timezone",
   }
 
   # update short_open_tag php cli
-  augeas{"Set PHPshort_open_tag_phpcli" :
+  augeas {"Set PHPshort_open_tag_phpcli" :
     context => "/files/etc/php5/cli/php.ini/PHP",
     changes => "set short_open_tag Off",
   }
 
   # update short_open_tag php apache
-  augeas{"Set PHPshort_open_tag_phpapache" :
+  augeas {"Set PHPshort_open_tag_phpapache" :
     context => "/files/etc/php5/apache2/php.ini/PHP",
     changes => "set short_open_tag Off",
   }
@@ -57,7 +57,7 @@ class boxes::productionbox {
   }
 
   # change ownership of installdir to $user
-  file{"$boxes::project_root"
+  file {"$boxes::project_root"
     user => "$boxes::user",
     group => "$boxes::www_group",
     mode => 1775,
