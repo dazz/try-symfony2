@@ -4,7 +4,7 @@ class boxes {
   $apt_sources_location = "http://ftp.de.debian.org/debian/"
 
   # setupbox
-  $php_packages      = ["php5-intl","php5-mysql", "php5-libxm"]
+  $php_packages      = ["php5-intl","php5-mysql", ]
   $php_modules       = ["apc", "bcmath", "bz2", "Core", "ctype", "curl", "date", "dom", "ereg"]
   $mysql_password    = 'vagrant'
 
@@ -14,6 +14,7 @@ class boxes {
   $www_group         = "www-data"
 
   ## dirs and folders
+  $repo_url          = "https://github.com/symfony/symfony-standard.git"
   $install_dir       = "/var/www"
   $project_root      = "$install_dir/$projectname"
 

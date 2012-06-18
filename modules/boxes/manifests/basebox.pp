@@ -36,6 +36,7 @@ class boxes::basebox {
     locales => ['de_DE.UTF-8 UTF-8'],
   }
 
+  # update puppet and facter, because some modules require a newer version than there might be installed
 
   # install new veriosn of facter
   package {"facter":
