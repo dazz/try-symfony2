@@ -13,7 +13,21 @@ class boxes::cibox {
 
   class { "webdev::bash_aliases": }
 
-  boxes::cibox::jenkins::plugin {
-    'git' : ;
+  boxes::cibox::jplugin {
+    'git' : ,
+    'vagrant' : ,
+    'audit-trail' : ,
+    'createjobadvanced' : ,
+    'simple-theme-plugin' : ,
+    'external-monitor-job' : ,
+    'jenkinswalldisplay' : ,
+    'all-changes' : ,
+    'redmine' : ,
+    'chucknorris' : ,
+    'greenballs' : ,
+  }
+
+  package { ["htop", "vim"]:
+    ensure => installed
   }
 }
