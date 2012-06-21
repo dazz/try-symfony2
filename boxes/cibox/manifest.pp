@@ -1,1 +1,3 @@
-include boxes::cibox
+node default {
+  include boxes::cibox
+}
