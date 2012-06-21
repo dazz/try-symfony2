@@ -1,4 +1,4 @@
-define boxes::cibox::jenkins::plugin($version=0) {
+define boxes::cibox::jplugin($version=0) {
   $plugin            = "${name}.hpi"
   $plugin_dir        = '/var/lib/jenkins/plugins'
   $plugin_parent_dir = '/var/lib/jenkins'
