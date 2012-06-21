@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # see for the right order here
-boxes=(basebox setupbox productionbox testbox developmentbox stagebox)
+boxes=(basebox setupbox productionbox testbox developmentbox stagebox cibox)
 boxes_dir='boxes'
 
 
@@ -370,9 +370,11 @@ Options:
         boxes_base_list
         ;;
       *)
-        echo "Usage: boxes base <option>"
+        echo "Usage: boxes base <option>
   - remove   remove all added boxes
   - list     list all added boxes
+
+"
         ;;
       esac
       ;;
