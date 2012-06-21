@@ -313,7 +313,7 @@ start() {
       box_package $3
       ;;
     'add')
-      box_start $3
+      box_add $3
       ;;
     'destroy')
       box_destroy $3
