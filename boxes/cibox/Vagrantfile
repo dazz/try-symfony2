@@ -10,7 +10,8 @@ Vagrant::Config.run do |config|
     cibox.package.name = "cibox"
 
     # base_box of our BASE BOX
-    cibox.vm.box = "squeeze64"
+    #cibox.vm.box = "squeeze64"
+    cibox.vm.box = "basebox"
 
     # you can set your own url here, but make sure that you do not maintain this box to stay
     # clear of your project scope. it ends here.
@@ -24,10 +25,22 @@ Vagrant::Config.run do |config|
 
     # as you don't start this vm at the same time as the successor it is ok to have
     # the same ip for every Vagrantfile
-    cibox.vm.network :hostonly, "192.168.23.44", :auto_config => true, :adapter => 3
+    cibox.vm.network :hostonly, "192.168.23.44", :auto_config => true, :adapter => 2
 
     # we want to run git in the vm
     cibox.ssh.forward_agent = true
+
+    #
+    # vagrant vbguest plugin
+    # on linux run: vagrant gem install vagrant-vbguest
+    #
+
+    # set auto_update to false, if do NOT want to check the correct additions
+    # version when booting this machine
+    cibox.vbguest.auto_update = true
+
+    # set no_remote to false if you do NOT want to download the iso file from a webserver
+    # cibox.vbguest.no_remote = true
 
     # the manifest.pp is in the same directory as the Vagrantfile
     cibox.vm.provision :puppet do |puppet|
