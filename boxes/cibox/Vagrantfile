@@ -14,18 +14,17 @@ Vagrant::Config.run do |config|
 
     # you can set your own url here, but make sure that you do not maintain this box to stay
     # clear of your project scope. it ends here.
-    # cibox.vm.box_url = "http://mathie-vagrant-boxes.s3.amazonaws.com/debian_squeeze_32.box"
     cibox.vm.box_url = "http://puppetlabs.s3.amazonaws.com/pub/squeeze64.box"
 
     # left it here for dev purpose, don't need it really
-    # cibox.vm.boot_mode = :gui
+    cibox.vm.boot_mode = :gui
 
     # cibox.vm.forward_port 80, 8080
     # cibox.vm.share_folder "v-data", "/vagrant_data", "../data"
 
     # as you don't start this vm at the same time as the successor it is ok to have
     # the same ip for every Vagrantfile
-    cibox.vm.network :hostonly, "192.168.23.44", :auto_config => true, :adapter => 2
+    cibox.vm.network :hostonly, "192.168.23.44", :auto_config => true, :adapter => 3
 
     # we want to run git in the vm
     cibox.ssh.forward_agent = true
