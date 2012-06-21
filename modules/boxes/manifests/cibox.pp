@@ -1,5 +1,17 @@
-class cibox {
+class boxes::cibox {
 
+  include apt::update
+  Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
+  Exec["apt_update"] -> Package <| |>
 
-  Class["jenkins::package"]
+  class { 'boxes::cibox::jenkins': }
+
+  group {
+    'puppet' :
+      ensure => present;
+  }
+
+#  jenkins::plugin {
+#    'git' : ;
+#  }
 }
