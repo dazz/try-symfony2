@@ -3,9 +3,8 @@ class boxes::basebox {
   include boxes
 
   # the update
-  Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
   include apt::update
-  #Package [require => Exec['apt_update']]
+  Exec { path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'], logoutput => true }
   Exec["apt_update"] -> Package <| |>
 
   # fix udev rules
@@ -80,4 +79,3 @@ class boxes::basebox {
 
   Package["puppet"] -> Exec["rename current puppet"] -> Exec["link new puppet"]
 }
-
