@@ -97,6 +97,19 @@ boxes_stop() {
   done
 }
 
+box_reload() {
+  if [ ! -n "$1" ]; then
+    echo "Usage: box reload <box>"
+    boxes_list
+    exit
+  fi
+
+  box="$1"
+
+  pushd $boxes_dir/$box >/dev/null
+  vagrant reload
+  popd >/dev/null
+}
 box_base_remove() {
   if [ ! -n "$1" ]; then
     echo "Usage: box base remove <box>"
@@ -300,7 +313,7 @@ start() {
       box_package $3
       ;;
     'add')
-      box_start $3
+      box_add $3
       ;;
     'destroy')
       box_destroy $3
@@ -313,6 +326,9 @@ start() {
       ;;
     'provision')
       box_provision $3
+      ;;
+    'reload')
+      box_reload $3
       ;;
     'base')
       case "$3" in
@@ -339,6 +355,7 @@ Options:
   - remove_pack <box>   removes packed file
   - status <box>        show status of box
   - provision <box>     provision a box
+  - reload <box>        reload a box
   - base                .. more options here
 "
       ;;

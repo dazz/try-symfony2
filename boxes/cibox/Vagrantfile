@@ -30,17 +30,7 @@ Vagrant::Config.run do |config|
     # we want to run git in the vm
     cibox.ssh.forward_agent = true
 
-    #
-    # vagrant vbguest plugin
-    # on linux run: vagrant gem install vagrant-vbguest
-    #
-
-    # set auto_update to false, if do NOT want to check the correct additions
-    # version when booting this machine
-    cibox.vbguest.auto_update = true
-
-    # set no_remote to false if you do NOT want to download the iso file from a webserver
-    # cibox.vbguest.no_remote = true
+    cibox.vm.customize ["modifyvm", :id, "--memory", 512]
 
     # the manifest.pp is in the same directory as the Vagrantfile
     cibox.vm.provision :puppet do |puppet|
