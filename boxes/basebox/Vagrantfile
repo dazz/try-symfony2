@@ -30,7 +30,24 @@ Vagrant::Config.run do |config|
     # we want to run git in the vm
     basebox.ssh.forward_agent = true
 
+    # set memorysize
+    basebox.vm.customize ["modifyvm", :id, "--memory", 1024]
+
+    #
+    # vagrant vbguest plugin
+    # on linux run: vagrant gem install vagrant-vbguest
+    #
+
+    # set auto_update to false, if do NOT want to check the correct additions
+    # version when booting this machine
+    basebox.vbguest.auto_update = true
+
+    # set no_remote to false if you do NOT want to download the iso file from a webserver
+    # basebox.vbguest.no_remote = true
+
+    #
     # the manifest.pp is in the same directory as the Vagrantfile
+    #
     basebox.vm.provision :puppet do |puppet|
       puppet.manifests_path = "./"
       puppet.manifest_file  = "manifest.pp"
