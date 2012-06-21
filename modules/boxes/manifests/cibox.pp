@@ -11,7 +11,9 @@ class boxes::cibox {
       ensure => present;
   }
 
-#  jenkins::plugin {
-#    'git' : ;
-#  }
+  class { "webdev::bash_aliases": }
+
+  boxes::cibox::jenkins::plugin {
+    'git' : ;
+  }
 }
